@@ -18,20 +18,39 @@ def read_input(input_file):
 
     return reports
 
+def is_safe(report):
+    """
+    Arguments:
+    pairs: a list of pairs. e.g. [[1,2], [4,6], [7, 10]]
+    Returns:
+    None if there is no unsafe pair
+    [x, y] a pair which was found to be unsafe
+    """
+    gradients = list(map(lambda x: x[1]-x[0], pairwise(report)))
+    if abs(sum(gradients)) == sum(map(abs, gradients)):
+        # all gradients are either positiv or negative
+        if len(list(filter(lambda x: 0 < abs(x) < 4, gradients))) == len(gradients):
+            # all gradients are greater than 0 and smaller than 4
+            return True
+    return False
+
 def task_1(input_file):
     reports = read_input(input_file)
-    safe_reports = 0                       
-    for report in reports:
-        gradients = list(map(lambda x: x[1]-x[0], pairwise(report)))
-        if abs(sum(gradients)) == sum(map(abs, gradients)):
-            # all gradients are either positiv or negative
-            if len(list(filter(lambda x: 0 < abs(x) < 4, gradients))) == len(gradients):
-                # all gradients are greater than 0 and smaller than 4
-                safe_reports += 1
+    safe_reports = len(list(filter(is_safe, reports)))
     print(f'There are {safe_reports} safe reports')
 
 def task_2(input_file):
-    pass
+    reports = read_input(input_file)
+    safe_reports = 0
+    for report in reports:
+        if is_safe(report):
+            safe_reports += 1
+        else:
+            for i in range(len(report)):
+                if is_safe(report[:i] + report[i+1:]):
+                    safe_reports += 1
+                    break
+    print(f'safe reports including dampening: {safe_reports}')
 
 if __name__ == "__main__":
     input_file = 'input.txt'
