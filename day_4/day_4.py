@@ -45,19 +45,7 @@ def task_1(input_file):
 
 
 import numpy as np
-def task_gpt(input_file):
-
-    # Die Matrix als 2D-Array darstellen
-    matrix_string = """
-    XMASXMAS
-    MASXMASX
-    ASXMASXM
-    SXMASXMA
-    XMASXMAS
-    MASXMASX
-    ASXMASXM
-    SXMASXMA
-    """
+def task_gpt():
     with open('input.txt') as f:
         matrix_string = f.read()
 
@@ -98,12 +86,25 @@ def count_word_in_direction(matrix, word, dx, dy):
 
 
 def task_2(input_file):
-    pass
+    input = read_input(input_file)
+    diags = [((-1, -1), (1, 1)), ((-1, 1), (1, -1))]
+    x_count = 0
+    for i in range(1, len(input[0]) - 1):
+        for j in range(1, len(input) - 1):
+            if input[i][j] == 'A':
+                ms_count = 0
+                for d in diags:
+                    word = input[i+d[0][0]][j+d[0][1]] + input[i+d[1][0]][j+d[1][1]]
+                    if word == 'MS' or word == 'SM':
+                        ms_count += 1
+                if ms_count == 2:
+                    x_count += 1
+    print(x_count)
 
 if __name__ == "__main__":
     input_file = 'input.txt'
     if sys.argv.count('-t'):
         input_file = 'test_input.txt'
+    task_gpt()
     # task_1(input_file)
-    # task_2(input_file)
-    task_gpt(0)
+    task_2(input_file)
